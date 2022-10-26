@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+const topicsArray = ['javascript', 'bootstrap', 'technology']
 const Tabs = (topics) => {
   // TASK 3
   // ---------------------
@@ -15,11 +16,18 @@ const Tabs = (topics) => {
   //   <div class="tab">technology</div>
   // </div>
   //
-  let tabDiv = document.createElement('div')
-  tabDiv.classList.add('topics')
-  tabDiv.textContent = topics
+  
+const topicsWrapper = document.createElement('div')
 
-  return tabDiv
+topics.forEach(linkText => {
+  const link = document.createElement('div')
+  topicsWrapper.appendChild(link)
+  link.textContent = linkText
+})
+
+topicsWrapper.classList.add('topics')
+
+return topicsWrapper
 }
 
 const tabsAppender = (selector) => {
@@ -31,22 +39,15 @@ const tabsAppender = (selector) => {
   // Append the tabs to the element in the DOM that matches the selector passed to the function.
   //
 
-  let tabsDiv = document.querySelector(selector)
-  let D
-
-  function jff (elem){
-    return document.createElement(elem)
-  }
-
-  axios.get(`http://localhost:5001/api/topics`)
-    .then(data => {
-      D = data['data']['topics']
-      D.map(item => {
-        let r = Tabs(item)
-        tabsDiv.appendChild(r)
-      })
-    })
-    .catch(err => console.log(err))
+axios.get('http://localhost:5001/api/topics')
+  .then(res => {
+    const parent = document.querySelector(selector)
+    const arrayTopics = res.data.topics
+    parent.appendChild(Tabs(arrayTopics))
+  })
+  .catch(err => {
+    console.log(err)
+  })
 }
 
 export { Tabs, tabsAppender }
